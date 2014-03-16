@@ -142,7 +142,7 @@ if [ -z "$1" ] || [ "$1" == "miner" ]; then
   [ -z "$usage" ] || exit
   echo
   echo "Some useful miner commands are:"
-  print_summaries commands local global shell install uninstall rehash version versions which whence
+  print_summaries update
   echo
   echo "See \`miner help <command>' for information on a specific command."
   echo "For full documentation, see: https://github.com/gevans/miner#readme"

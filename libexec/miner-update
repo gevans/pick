@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+#
+# Summary: Update to the latest release from GitHub
+#
+# Usage: miner update [version]
+#
+# Pulls the latest changes from GitHub and switches to the optionally supplied
+# tag or branch. If no version is specified the current branch will be used.
+
+set -e
+[ -n "$MINER_DEBUG" ] && set -x
+
+version="$1"
+if [ -z "$version" ]; then
+  version=$(git rev-parse --abbrev-ref HEAD)
+fi
+
+if [ "$version" = "HEAD" ]; then
+  version="master"
+fi
+
+git fetch --all
+git checkout $version
+git rebase origin/$version
