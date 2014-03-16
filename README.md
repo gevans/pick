@@ -1,6 +1,8 @@
 # miner
 
-TODO: Write a description here
+Use miner to install, run, and manage your favorite fork(s) and versions of
+cgminer. Based on [rbenv](https://github.com/sstephenson/rbenv) where a lot of
+this project's code and inspiration comes from.
 
 ## Installation
 
