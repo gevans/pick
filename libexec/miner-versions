@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+#
+# Summary: List all installed miner versions
+#
+# Usage: miner versions [--bare]
+#
+# Lists all miner versions found in `$MINER_ROOT/versions/*'.
+
+set -e
+[ -n "$MINER_DEBUG" ] && set -x
+
+if [ "$1" = "--bare" ]; then
+  hit_prefix=""
+  miss_prefix=""
+  current_version=""
+else
+  hit_prefix="* "
+  miss_prefix="  "
+  current_version="$(miner-version-name || true)"
+fi
+
+print_version() {
+  if [ "$1" == "$current_version" ]; then
+    echo "${hit_prefix}$(miner-version 2>/dev/null)"
+  else
+    echo "${miss_prefix}$1"
+  fi
+}
+
+for path in "$MINER_ROOT/versions/"*; do
+  if [ -d "$path" ]; then
+    print_version "${path##*/}"
+  fi
+done
