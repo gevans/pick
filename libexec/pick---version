@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-# Summary: Display the version of miner
 #
-# Displays the version number of this miner release, including the
-# current revision from git, if available.
+# Summary: Display the version of pick
+#
+# Displays the version number of this release of pick, including the current
+# revision from git, if available.
 #
 # The format of the git revision is:
 #   <version>-<num_commits>-<git_sha>
@@ -10,13 +11,13 @@
 # tagged.
 
 set -e
-[ -n "$MINER_DEBUG" ] && set -x
+[ -n "$PICK_DEBUG" ] && set -x
 
 version="0.1.0"
 
-if cd "$MINER_ROOT" 2>/dev/null; then
+if cd "$PICK_ROOT" 2>/dev/null; then
   git_revision="$(git describe --tags HEAD 2>/dev/null || true)"
   git_revision="${git_revision#v}"
 fi
 
-echo "miner ${git_revision:-$version}"
+echo "pick ${git_revision:-$version}"

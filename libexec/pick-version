@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+#
+# Summary: Show the current selected miner version
+
+set -e
+[ -n "$PICK_DEBUG" ] && set -x
+
+new_version="$1"
+if [ -z "$new_version" ]; then
+  pick-version-name
+  exit
+fi
+
+if [ "$new_version" = "system" ]; then
+  rm -f "$PICK_ROOT/versions/current"
+fi
+
+if [ -d "$PICK_ROOT/versions/$new_version" ]; then
+  rm -f "$PICK_ROOT/versions/current"
+  cd "$PICK_ROOT/versions"
+  ln -s "$new_version" "current"
+else
+  echo "pick: version \`$new_version' not installed" >&2
+  exit 1
+fi

@@ -2,12 +2,12 @@
 #
 # Summary: List all installed miner versions
 #
-# Usage: miner versions [--bare]
+# Usage: pick versions [--bare]
 #
-# Lists all miner versions found in `$MINER_ROOT/versions/*'.
+# Lists all miner versions found in `$PICK_ROOT/versions/*'.
 
 set -e
-[ -n "$MINER_DEBUG" ] && set -x
+[ -n "$PICK_DEBUG" ] && set -x
 
 if [ "$1" = "--bare" ]; then
   hit_prefix=""
@@ -16,18 +16,18 @@ if [ "$1" = "--bare" ]; then
 else
   hit_prefix="* "
   miss_prefix="  "
-  current_version="$(miner-version-name || true)"
+  current_version="$(pick-version-name || true)"
 fi
 
 print_version() {
   if [ "$1" == "$current_version" ]; then
-    echo "${hit_prefix}$(miner-version 2>/dev/null)"
+    echo "${hit_prefix}$(pick-version 2>/dev/null)"
   else
     echo "${miss_prefix}$1"
   fi
 }
 
-for path in "$MINER_ROOT/versions/"*; do
+for path in "$PICK_ROOT/versions/"*; do
   if [ -d "$path" ]; then
     print_version "${path##*/}"
   fi

@@ -4,18 +4,18 @@ set -e
 export -n CDPATH
 
 if [ "$1" = "--debug" ]; then
-  export MINER_DEBUG=1
+  export PICK_DEBUG=1
   shift
 fi
 
-if [ -n "$MINER_DEBUG" ]; then
+if [ -n "$PICK_DEBUG" ]; then
   export PS4='+ [${BASH_SOURCE##*/}:${LINENO}] '
   set -x
 fi
 
 READLINK=$(type -p greadlink readlink | head -1)
 if [ -z "$READLINK" ]; then
-  echo "rbenv: cannot find readlink - are you missing GNU coreutils?" >&2
+  echo "pick: cannot find readlink - are you missing GNU coreutils?" >&2
   exit 1
 fi
 
@@ -37,17 +37,17 @@ abs_dirname() {
   cd "$cwd"
 }
 
-if [ -z "$MINER_ROOT" ]; then
-  MINER_ROOT="$(resolve_link -f "$(dirname $0)/../")"
+if [ -z "$PICK_ROOT" ]; then
+  PICK_ROOT="$(resolve_link -f "$(dirname $0)/../")"
 fi
-export MINER_ROOT
+export PICK_ROOT
 
-cd "$MINER_ROOT" 2>/dev/null || {
-  echo "miner: cannot change working directory to \`$MINER_ROOT'"
+cd "$PICK_ROOT" 2>/dev/null || {
+  echo "pick: cannot change working directory to \`$PICK_ROOT'"
 }
 
 bin_path="$(abs_dirname "$0")"
-for plugin_bin in "$MINER_ROOT/plugins/"*/bin; do
+for plugin_bin in "$PICK_ROOT/plugins/"*/bin; do
   bin_path="${bin_path}:${plugin_bin}"
 done
 export PATH="$bin_path:$PATH"
@@ -55,15 +55,15 @@ export PATH="$bin_path:$PATH"
 command="$1"
 case "$command" in
 "" | "-h" | "--help" )
-  echo -e "$(miner---version)\n$(miner-help)" >&2
+  echo -e "$(pick---version)\n$(pick-help)" >&2
   ;;
 "-v" )
-  exec miner---version
+  exec pick---version
   ;;
 * )
-  command_path="$(command -v "miner-$command" || true)"
+  command_path="$(command -v "pick-$command" || true)"
   if [ -z "$command_path" ]; then
-    echo "miner: no such command \`$command'" >&2
+    echo "pick: no such command \`$command'" >&2
     exit 1
   fi
 
