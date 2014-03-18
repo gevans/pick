@@ -16,11 +16,13 @@ if [ "$1" = "--bare" ]; then
 else
   hit_prefix="* "
   miss_prefix="  "
-  current_version="$(pick-version-name || true)"
+  current_version="$(pick-version || true)"
 fi
 
 print_version() {
-  if [ "$1" == "$current_version" ]; then
+  if [ "$1" == "current" ]; then
+    return
+  elif [ "$1" == "$current_version" ]; then
     echo "${hit_prefix}$(pick-version 2>/dev/null)"
   else
     echo "${miss_prefix}$1"
