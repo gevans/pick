@@ -6,7 +6,19 @@ this project's code and inspiration comes from.
 
 ## Installation
 
-TODO: Write installation instructions here
+Pick can be done automatically installed through
+[`pick-installer`](https://github.com/gevans/pick/blob/master/pick-installer):
+
+```sh
+$ curl -sSL https://raw.github.com/gevans/pick/master/pick-installer | bash
+```
+
+Alternatively, pick can be installed manually:
+
+```sh
+$ git clone --recursive https://github.com/gevans/pick.git ~/.pick
+$ echo '[ -d "$HOME/.pick/bin" ] && PATH="$HOME/.pick/bin:$PATH"'
+```
 
 ## Usage
 

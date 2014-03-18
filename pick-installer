@@ -52,6 +52,7 @@ git clone --recursive https://github.com/gevans/pick $install_dir
 
 log "Adding pick to \`\$PATH\` in $profile ..."
 tee $profile >>/dev/null <<'EOF'
-[ -d /opt/pick/bin ] && PATH="/opt/pick/bin:$PATH"
-[ -d $HOME/.pick/bin ] && PATH="$HOME/.pick/bin:$PATH"
+# Added by `pick` (https://github.com/gevans/pick#readme):
+[ -d "/opt/pick/bin" ]   && PATH="/opt/pick/bin:$PATH"
+[ -d "$HOME/.pick/bin" ] && PATH="$HOME/.pick/bin:$PATH"
 EOF
