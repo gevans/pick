@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+#
+# Summary: Set the selected miner
+#
+# Usage: pick use <miner> [version]
+#
+# Examples:
+#
+#   $ pick use sgminer       # Use latest stable of specific miner 
+#   $ pick use sgminer 4.1.0 # Use specific miner version
+#   $ pick use system        # Unset miner version
+
+set -e
+[ -n "$PICK_DEBUG" ] && set -x
+
+if [ -z "$1" ]; then
+  echo "pick: no miner specified" >&2
+  echo "$(pick-help use)" >&2
+  exit 1
+fi
+
+if [ "$1" = "system" ]; then
+  echo "pick: using system miner" >&2
+  rm -f "$PICK_ROOT/versions/current"
+  exit
+fi
+
+expand_version() {
+  local flavor="${1%%-*}"
+  local file="$PICK_ROOT/plugins/miner-install/share/miner-install/$flavor/versions.txt"
+  [ ! -f "$file" ] && return
+
+  local key="${1#*-}"
+  if [ "$key" = "$flavor" ]; then
+    local key="stable"
+  fi
+
+  local pair="$(grep -E "^$key:" "$file")"
+  echo "$flavor-$(echo "${pair##$key:*([[:space:]])}" | awk '{print $2}')"
+}
+
+detect_miner_version() {
+  local q="$1"
+  [ ! -z "$2" ] && q+="-$2"
+  
+  if [ -z "$q" ]; then
+    q="current"
+  fi
+
+  if [ "$q" = "current" ]; then
+    local query=$(pick-version)
+  elif [ ! -d "$PICK_ROOT/versions/$q" ]; then
+    local query="$(expand_version "$q")"
+  fi
+
+  miner="${query%%-*}"
+  miner_version="${query#*-}"
+
+  if [ -z "$miner" ] || [ -z "$miner_version" ]; then
+    echo "pick: unrecognized miner \`$q'" >&2
+    exit 1
+  fi
+}
+
+detect_miner_version "$@"
+
+if [ -x "$PICK_ROOT/versions/$miner-$miner_version/bin/$miner" ]; then
+  rm -f "$PICK_ROOT/versions/current"
+  cd "$PICK_ROOT/versions"
+  ln -s "$miner-$miner_version" "current"
+else
+  echo "pick: $miner $miner_version not installed" >&2
+  exit 1
+fi
+
+echo "pick: using \`$(pick-version)'."
