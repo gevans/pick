@@ -44,13 +44,20 @@ export PICK_ROOT
 
 cd "$PICK_ROOT" 2>/dev/null || {
   echo "pick: cannot change working directory to \`$PICK_ROOT'"
-}
+  exit 1
+} >&2
+PICK_ROOT="$(pwd)"
+cd "$OLDPWD"
+
+shopt -s nullglob
 
 bin_path="$(abs_dirname "$0")"
 for plugin_bin in "$PICK_ROOT/plugins/"*/bin; do
   bin_path="${bin_path}:${plugin_bin}"
 done
 export PATH="$bin_path:$PATH"
+
+shopt -u nullglob
 
 command="$1"
 case "$command" in
