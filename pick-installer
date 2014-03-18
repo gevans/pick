@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+shopt -s extglob
+set -o errtrace
+set -o errexit
+
+log() {
+  if [[ -t 1 ]]; then
+    echo -e "\x1b[1m\x1b[32m>>>\x1b[0m \x1b[1m$1\x1b[0m"
+  else
+    echo ">>> $1"
+  fi
+}
+
+warn() {
+  if [[ -t 1 ]]; then
+    echo -e "\x1b[1m\x1b[33m***\x1b[0m \x1b[1m$1\x1b[0m" >&2
+  else
+    echo "*** $1" >&2
+  fi
+}
+
+error() {
+  if [[ -t 1 ]]; then
+    echo -e "\x1b[1m\x1b[31m!!!\x1b[0m \x1b[1m$1\x1b[0m" >&2
+  else
+    echo "!!! $1" >&2
+  fi
+}
+
+fail() {
+  error "$*"
+  exit -1
+}
+
+if ! command -v git >/dev/null; then
+  fail "pick-installer: git not found"
+fi
+
+if [ -z "$install_dir" ]; then
+  if (( $UID == 0 )); then
+    install_dir="/opt/pick"
+    profile="/etc/profile.d/pick.sh"
+  else
+    install_dir="$HOME/.pick"
+    profile="$HOME/.profile"
+  fi
+fi
+
+log "Installing pick to $install_dir ..."
+git clone --recursive https://github.com/gevans/pick $install_dir
+
+log "Adding pick to \`\$PATH\` in $profile ..."
+tee $profile >>/dev/null <<'EOF'
+[ -d /opt/pick/bin ] && PATH="/opt/pick/bin:$PATH"
+[ -d $HOME/.pick/bin ] && PATH="$HOME/.pick/bin:$PATH"
+EOF
