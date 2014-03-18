@@ -5,21 +5,27 @@
 set -e
 [ -n "$PICK_DEBUG" ] && set -x
 
-new_version="$1"
-if [ -z "$new_version" ]; then
-  pick-version-name
+resolve_link() {
+  $(type -p greadlink readlink | head -1) "$1"
+}
+
+if [ -z "$PICK_VERSION" ] && [ -h "$PICK_ROOT/versions/current" ]; then
+  PICK_VERSION=$(resolve_link "$PICK_ROOT/versions/current")
+fi
+
+if [ -z "$PICK_VERSION" ]; then
+  echo "system"
   exit
 fi
 
-if [ "$new_version" = "system" ]; then
-  rm -f "$PICK_ROOT/versions/current"
-fi
+version_exists() {
+  local version="$1"
+  [ -d "$PICK_ROOT/versions/$version" ]
+}
 
-if [ -d "$PICK_ROOT/versions/$new_version" ]; then
-  rm -f "$PICK_ROOT/versions/current"
-  cd "$PICK_ROOT/versions"
-  ln -s "$new_version" "current"
+if version_exists "$PICK_VERSION"; then
+  echo $PICK_VERSION
 else
-  echo "pick: version \`$new_version' not installed" >&2
+  echo "pick: version \`$PICK_VERSION' not installed" >&2
   exit 1
 fi
