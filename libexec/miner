@@ -19,8 +19,26 @@ if [ -z "$READLINK" ]; then
   exit 1
 fi
 
+resolve_link() {
+  $READLINK "$@"
+}
+
+abs_dirname() {
+  local cwd="$(pwd)"
+  local path="$1"
+
+  while [ -n "$path" ]; do
+    cd "${path%/*}"
+    local name="${path##*/}"
+    path="$(resolve_link "$name" || true)"
+  done
+
+  pwd
+  cd "$cwd"
+}
+
 if [ -z "$MINER_ROOT" ]; then
-  MINER_ROOT="$($READLINK -f "$(dirname $0)/../")"
+  MINER_ROOT="$(resolve_link -f "$(dirname $0)/../")"
 fi
 export MINER_ROOT
 
@@ -28,7 +46,11 @@ cd "$MINER_ROOT" 2>/dev/null || {
   echo "miner: cannot change working directory to \`$MINER_ROOT'"
 }
 
-export PATH="$MINER_ROOT/libexec:$PATH"
+bin_path="$(abs_dirname "$0")"
+for plugin_bin in "$MINER_ROOT/plugins/"*/bin; do
+  bin_path="${bin_path}:${plugin_bin}"
+done
+export PATH="$bin_path:$PATH"
 
 command="$1"
 case "$command" in

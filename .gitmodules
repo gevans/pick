@@ -1,0 +1,3 @@
+[submodule "plugins/miner-install"]
+	path = plugins/miner-install
+	url = https://github.com/gevans/miner-install.git
