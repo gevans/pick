@@ -76,6 +76,10 @@ parse_options() {
 
 parse_options "$@"
 
+if [ "$miner" = "system" ]; then
+  echo "pick: system execution not supported" >&2
+  exit 1
+fi
 
 if [ -x "$miner_bin" ]; then
   export PATH="$PICK_ROOT/versions/$miner-$miner_version/bin:$PATH"
