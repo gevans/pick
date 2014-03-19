@@ -81,3 +81,15 @@ $ pick exec bfgminer 3.10.0 -c /path/to/config.json
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+## Obligatory Donation Links
+
+Did this project save you time? Consider sending a beer:
+
+```
+BTC: 16eVffBKdDnCFahVA691ENQTyGy5cUtz95
+LTC: LiFWkwWzbvdqcb6fC57sEjvCHMizgqG1Wr
+```
+
+![Bitcoin](http://i.imgur.com/JupFQXS.png)
+![Litecoin](http://i.imgur.com/1eGvltd.png)
