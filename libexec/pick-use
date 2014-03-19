@@ -49,7 +49,9 @@ detect_miner_version() {
 
   if [ "$q" = "current" ]; then
     local query=$(pick-version)
-  elif [ ! -d "$PICK_ROOT/versions/$q" ]; then
+  elif [ -d "$PICK_ROOT/versions/$q" ]; then
+    local query="$q"
+  else
     local query="$(expand_version "$q")"
   fi
 
