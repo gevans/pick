@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Summary: 
+# Summary: Execute the selected miner
 #
 # Usage: pick exec [options] [miner [version]] [--] [miner_options ...]
 #
@@ -38,8 +38,15 @@ detect_miner_version() {
 
   if [ "$q" = "current" ]; then
     local query=$(pick-version)
-  elif [ ! -d "$PICK_ROOT/versions/$q" ]; then
+  elif [ -d "$PICK_ROOT/versions/$q" ]; then
+    local query="$q"
+  else
     local query="$(expand_version "$q")"
+  fi
+
+  if [ "$query" = "system" ]; then
+    echo "pick: system execution not supported" >&2
+    exit 1
   fi
 
   miner="${query%%-*}"
@@ -67,26 +74,27 @@ parse_options() {
     shift
   fi
 
-  miner_options=("$@")
-  
   detect_miner_version "${argv[@]}"
+  command=$(echo "$miner" "$@" | xargs)
+}
 
-  command=$(echo "$miner ${miner_options[@]}" | xargs)
+export_variables() {
+  if [ -x "$miner_bin" ]; then
+    PATH="$PICK_ROOT/versions/$miner-$miner_version/bin:$PATH"
+  else
+    echo "pick: $miner $miner_version not installed" >&2
+    exit 1
+  fi
+
+  [ -z "$DISPLAY" ] && DISPLAY=":0"
+  [ -z "$GPU_MAX_ALLOC_PERCENT" ] && GPU_MAX_ALLOC_PERCENT="100"
+  [ -z "$GPU_USE_SYNC_OBJECTS" ] && GPU_USE_SYNC_OBJECTS="1"
+
+  export PATH DISPLAY GPU_MAX_ALLOC_PERCENT GPU_USE_SYNC_OBJECTS
 }
 
 parse_options "$@"
-
-if [ "$miner" = "system" ]; then
-  echo "pick: system execution not supported" >&2
-  exit 1
-fi
-
-if [ -x "$miner_bin" ]; then
-  export PATH="$PICK_ROOT/versions/$miner-$miner_version/bin:$PATH"
-else
-  echo "pick: $miner $miner_version not installed" >&2
-  exit 1
-fi
+export_variables
 
 echo "=> Booting $miner $miner_version with \`$command'"
 $command
