@@ -63,7 +63,7 @@ update_pick() {
   git submodule update --recursive || return $?
 }
 
-parse_version
+parse_version "$1"
 prepare_log
 
 set +e
