@@ -6,7 +6,7 @@ this project's code and inspiration comes from.
 
 ## Installation
 
-Pick can be done automatically installed through
+Pick can be automatically installed through
 [`pick-installer`](https://github.com/gevans/pick/blob/master/pick-installer):
 
 ```sh
