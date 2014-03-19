@@ -10,15 +10,64 @@
 set -e
 [ -n "$PICK_DEBUG" ] && set -x
 
-version="$1"
-if [ -z "$version" ]; then
-  version=$(git rev-parse --abbrev-ref HEAD)
-fi
+cd "$PICK_ROOT"
 
-if [ "$version" = "HEAD" ]; then
-  version="master"
-fi
+parse_version() {
+  version="$1"
+  if [ -z "$version" ]; then
+    version=$(git rev-parse --abbrev-ref HEAD)
+  fi
 
-git fetch --all
-git checkout $version
-git rebase origin/$version
+  if [ "$version" = "HEAD" ]; then
+    version="master"
+  fi
+}
+
+prepare_log() {
+  LOG_PATH="$PICK_ROOT/pick-update.log"
+  [ -f "$LOG_PATH" ] || touch "$LOG_PATH"
+  truncate -s 0 "$LOG_PATH"
+}
+
+file_is_not_empty() {
+  local filename="$1"
+  local line_count="$(wc -l "$filename" 2>/dev/null || true)"
+
+  if [ -n "$line_count" ]; then
+    words=( $line_count )
+    [ "${words[0]}" -gt 0 ]
+  else
+    return 1
+  fi
+}
+
+update_fail() {
+  echo "pick: update failed" >&2
+
+  if file_is_not_empty "$LOG_PATH"; then
+    echo "Results logged to $LOG_PATH" >&2
+    echo >&2
+    echo "Last 10 log lines:" >&2
+    tail -n 10 "$LOG_PATH" >&2
+  fi
+
+  exit 1
+}
+
+update_pick() {
+  git fetch --all || return $?
+  git checkout $version || return $?
+  git rebase origin/$version || return $?
+  git submodule update --init --recursive || return $?
+  git submodule foreach --recursive git fetch || return $?
+  git submodule update --recursive || return $?
+}
+
+parse_version
+prepare_log
+
+set +e
+update_pick >"$LOG_PATH" 2>&1 || update_fail
+set -e
+
+echo "pick: updated to $(pick---version)"

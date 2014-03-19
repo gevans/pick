@@ -3,3 +3,4 @@
 /cache
 /tmp
 /versions
+*.log
