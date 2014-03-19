@@ -143,7 +143,7 @@ if [ -z "$1" ] || [ "$1" == "pick" ]; then
   [ -z "$usage" ] || exit
   echo
   echo "Some useful pick commands are:"
-  print_summaries use install uninstall version versions update
+  print_summaries use exec install uninstall version versions update
   echo
   echo "See \`pick help <command>' for information on a specific command."
   echo "For full documentation, see: https://github.com/gevans/pick#readme"
