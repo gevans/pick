@@ -74,6 +74,16 @@ $ pick exec cgminer -c /path/to/config.json
 $ pick exec bfgminer 3.10.0 -c /path/to/config.json
 ```
 
+### Updating Pick
+
+```sh
+# Update to the latest stable version:
+$ pick update master
+
+# Update to the latest development version:
+$ pick update develop
+```
+
 ## Contributing
 
 1. Fork it (http://github.com/gevans/pick/fork)
