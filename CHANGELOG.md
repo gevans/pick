@@ -1,3 +1,9 @@
+## pick 0.1.2 (Unreleased)
+
+* Add banner image to readme.
+
+  *Chris Shepherd*
+
 ## pick 0.1.1
 
 * Defaults are exported for `$DISPLAY`, `$GPU_MAX_ALLOC_PERCENT`, and
