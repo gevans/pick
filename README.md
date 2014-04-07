@@ -1,4 +1,4 @@
-# pick
+[![Pick Axe Version Manager](pickaxe-banner.png)](https://raw.github.com/shphrd/pick/master/pickaxe-banner.png)
 
 Use `pick` to install, run, and manage your favorite versions and forks of
 cgminer. Based on [rbenv](https://github.com/sstephenson/rbenv) where a lot of
